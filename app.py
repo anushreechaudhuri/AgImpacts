@@ -18,6 +18,7 @@ def get_full_df():
 full_df = get_full_df()
 
 # Get Row Ranges for Commodities
+#random test edit
 rows = full_df[full_df.iloc[:, 0].notna()].iloc[:, 1]
 
 commodity_rows = {
