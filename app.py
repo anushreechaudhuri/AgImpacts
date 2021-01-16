@@ -80,13 +80,15 @@ with st.beta_expander('Indicator Charts'):
         'Label by System Type' : None
         }
     for y, name in col_labels:
-        df_filtered[y] = format_col(df_filtered, y)
+        column = format_col(df_filtered, y)
+        df_filtered[y] = column
         fig = px.scatter(x=df_filtered['GHG Emissions'],
                     template='simple_white',
             y=df_filtered[y], color=df_filtered['Country'] if options == 'Label by Country' else None, 
             symbol = df_filtered['System'] if options == 'Label by System Type' else None,
             title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
-            labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'Country', 'symbol' : 'System'}, trendline = trendline_dict[options],
+            labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'Country', 'symbol' : 'System'}
+            #, trendline = trendline_dict[options],
             )
         fig = format_fig(fig)
         st.plotly_chart(fig)
