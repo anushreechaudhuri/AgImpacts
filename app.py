@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
-
-st.set_page_config(layout='wide')
 import plotly.express as px
+from bokeh.models.widgets import Div
+st.set_page_config(layout='wide')
+
 
 st.title('Welcome to the AgImpacts Interactive Web Tool!')
 st.markdown('This is a work in progress. Additional features and polish are on their way!')
@@ -15,11 +16,17 @@ def get_full_df():
     return full_df
 
 def format_col(df, col):
-    del_things = (',', '-', '%', ' ')
+    del_things = (',', '-', '%', ' ', '  ')
     for del_thing in del_things:
         df[col] = df[col].replace(del_thing, '', regex=True)
     df[col] = df[col].replace('', 'NaN').replace('', 'nan').astype(float, errors='ignore')
     return df[col].dropna()
+
+def format_df_col(df, col):
+    col_values = format_col(df, col)
+    df[col] = col_values
+    df = df[df[col].notna()]
+    return df
 
 def format_fig(fig):
     fig.update_layout(
@@ -41,12 +48,11 @@ commodity_rows = {
     commodity: (start, end)
     for start, end, commodity in zip(rows.index, rows.index[1:], rows)
 }
-
+commodity_rows['Tuna'] = (596, 686)
 # Select the commodity to analyze
-commodity = st.sidebar.selectbox(label='Commodity', options=list(commodity_rows.keys()))
+commodity = st.sidebar.selectbox(label='Select a Commodity', options=list(commodity_rows.keys()))
 start, end = commodity_rows[commodity]
 df_filtered = full_df[start:end].dropna(axis=0, subset=['Reference'])
-
 numerical_cols = ['GHG Emissions', 'Land Use', 'Eutrophication Potential', 
                 'Acidification Potential', 'Freshwater Withdrawal']
 
@@ -64,37 +70,61 @@ col_labels_dict = {'GHG Emissions': 'GHG Emissions (kg CO<sub>2</sub> eq)',
 
 indicators = ['Land Use', 'Eutrophication Potential', 
     'Acidification Potential', 'Freshwater Withdrawal']
-
+web_links = {'Maize (Meal)' : 'https://agimpacts.wpengine.com/',
+    'Palm Oil' : 'https://agimpacts.wpengine.com/',
+    'Soybean' : 'https://agimpacts.wpengine.com/',
+    'Coffee' : 'https://agimpacts.wpengine.com/',
+    'Roundwood' : 'https://agimpacts.wpengine.com/',
+    'Beef' : 'https://agimpacts.wpengine.com/',
+    'Poultry' : 'https://agimpacts.wpengine.com/',
+    'Salmon' : 'https://agimpacts.wpengine.com/',
+    'Shrimp' : 'https://agimpacts.wpengine.com/',
+    'Tuna' : 'https://agimpacts.wpengine.com/'
+    }
 ghg = 'GHG Emissions'
 
 with st.beta_expander('Indicator Charts'):
     options = st.selectbox(
-        'Select Chart Features',
-        ['Linear Trendline', 'Non-Linear Trendline',# 'Display Statistics', 'Label by Country', 'Label by System Type'
-        ])
+        'Select Trendline',
+        ['Linear Trendline', 'Non-Linear Trendline', 'None'], index=2)
     trendline_dict = {
         'Linear Trendline': 'ols',
         'Non-Linear Trendline': 'lowess',
-        'Display Statistics' : None,
-        'Label by Country' : None, 
-        'Label by System Type' : None
+        'None' : None
         }
+    features = st.multiselect('Select Additional Features', ['Label by Country', 'Label by System Type', 'Display Statistics'
+    ])
     for y, name in col_labels:
-        column = format_col(df_filtered, y)
-        df_filtered[y] = column
-        fig = px.scatter(x=df_filtered['GHG Emissions'],
-                    template='simple_white',
-            y=df_filtered[y], color=df_filtered['Country'] if options == 'Label by Country' else None, 
-            symbol = df_filtered['System'] if options == 'Label by System Type' else None,
-            title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
-            labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'Country', 'symbol' : 'System'}
-            , trendline = trendline_dict[options],
-            )
-        fig = format_fig(fig)
-        st.plotly_chart(fig)
-        if options == 'Display Statistics':
-            results = px.get_trendline_results(fig)
-            st.write(str(results))
+        df_filtered = format_df_col(df_filtered, y)
+        df_filtered = format_df_col(df_filtered, 'Country')
+        df_filtered = format_df_col(df_filtered, 'System')
+        empty_graph = df_filtered[y].isnull().values.all() or df_filtered[ghg].isnull().values.all()
+        if empty_graph:
+            st.markdown(f'A graph for {name} cannot be generated because there is no data for this indicator.', unsafe_allow_html = True)
+        elif not empty_graph:
+            fig = px.scatter(x=df_filtered['GHG Emissions'],
+                        template='simple_white',
+                y=df_filtered[y]
+                , color= df_filtered['Country'] if 'Label by Country' in features else None
+                , symbol = df_filtered['System'] if 'Label by System Type' in features else None
+                , title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
+                labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'Country', 'symbol' : 'System'}
+                , trendline = trendline_dict[options]
+                )
+            fig = format_fig(fig)
+            st.plotly_chart(fig)
+            if 'Display Statistics' in features and (options == 'Linear Trendline' or options == 'Non-Linear Trendline') and empty_graph == False and df_filtered[y].describe().loc['count']>5:
+                try:
+                    results = px.get_trendline_results(fig)
+                    results_table = results.px_fit_results.iloc[0].summary().tables[1]
+                    st.markdown(f'### Statistical Values for {name} vs. GHG Emissions (kg CO<sub>2</sub> eq)', unsafe_allow_html=True)
+                    st.dataframe(results_table)
+                except:
+                    pas
+            elif 'Display Statistics' in features and empty_graph == False and df_filtered[y].describe().loc['count']>5:
+                st.markdown('Select a trendline to display statistics.')
+            elif 'Display Statistics' in features:
+                st.markdown('There is not enough data to display statistics.')
 
 with st.beta_expander('Impact Analysis'):
     ghg_col = format_col(df_filtered, ghg)
@@ -114,39 +144,54 @@ with st.beta_expander('Impact Analysis'):
             st.dataframe(quantile_list)
     for y, name in col_labels:
         cutoff_df[y] = format_col(cutoff_df, y)
-        fig = px.scatter(x=cutoff_df['GHG Emissions'],
-                    template='simple_white',
-            y=cutoff_df[y],
-            title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
-            labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'System'}#, trendline = 'ols'
-            )
-        fig = format_fig(fig)
-        st.plotly_chart(fig)
-        st.markdown(f'The median {name} for your selected range is {cutoff_df[y].median()}, and the average is {round(cutoff_df[y].mean(), 5)}.', unsafe_allow_html=True)
+        empty_graph = df_filtered[y].isnull().values.all() or df_filtered[ghg].isnull().values.all()
+        if empty_graph:
+            st.markdown(f'A graph for {name} cannot be generated because there is no data for this indicator.', unsafe_allow_html = True)
+        elif not empty_graph:
+            fig = px.scatter(x=cutoff_df['GHG Emissions'],
+                        template='simple_white',
+                y=cutoff_df[y],
+                title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
+                labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'System'}#, trendline = 'ols'
+                )
+            fig = format_fig(fig)
+            st.plotly_chart(fig)
+            st.markdown(f'The median {name} for your selected range is {cutoff_df[y].median()}, and the average is {round(cutoff_df[y].mean(), 5)}.', unsafe_allow_html=True)
 
 with st.beta_expander('Geographic Overview of Indicators'):
     st.markdown('This tool analyzes indicators by geographic region.')
     col = st.selectbox(label='Indicator to Analyze', options=numerical_cols)
     df_filtered[col] = format_col(df_filtered, col)
     data = df_filtered.groupby('Country')[col].mean()
-    
-    fig = px.scatter_geo(size=data.fillna(0), locations=data.index, locationmode='country names',
-                         title=f'Global {col_labels_dict[col]} for {commodity}', labels={'locations': 'Country', 'size': col}, 
-                        #  width=1500, height=600
-                        template='simple_white')
-    fig = format_fig(fig)
-    st.plotly_chart(fig)
-    fig = px.bar(x=data.index, y=data.fillna(0), title=f'{col_labels_dict[col]} vs. Country for {commodity}',
-                 labels={'x': 'Country', 'y': col_labels_dict[col]}, 
-                #  width=1500, height=600, 
-                template='simple_white')
-    fig = format_fig(fig)
-    st.plotly_chart(fig)
-
-with st.beta_expander('See Raw Data for Commodity'):
+    empty_graph = df_filtered[col].isnull().values.all() 
+    if empty_graph:
+        st.markdown(f'Graphs for {col} cannot be generated because there is no data for this indicator.', unsafe_allow_html = True)
+    elif not empty_graph:
+        fig = px.scatter_geo(size=data.fillna(0), locations=data.index, locationmode='country names',
+                            title=f'Global {col_labels_dict[col]} for {commodity}', labels={'locations': 'Country', 'size': col}, 
+                            #  width=1500, height=600
+                            template='simple_white')
+        fig = format_fig(fig)
+        st.plotly_chart(fig)
+        fig = px.bar(x=data.index, y=data.fillna(0), title=f'{col_labels_dict[col]} vs. Country for {commodity}',
+                    labels={'x': 'Country', 'y': col_labels_dict[col]}, 
+                    #  width=1500, height=600, 
+                    template='simple_white')
+        fig = format_fig(fig)
+        st.plotly_chart(fig)
+commodity_raw_data = f'See Raw Data for {commodity}'
+with st.beta_expander(commodity_raw_data):
     st.markdown('[See the original data sources here.](https://github.com/anushreechaudhuri/agimpacts/blob/master/AgImpacts_Data_Sources.md)', unsafe_allow_html=True)
     st.dataframe(df_filtered)
-
+st.text('')
+commodity_button = f'Read More About {commodity} on the AgImpacts Website'
+if st.button(commodity_button):
+    link = f"window.open('{web_links[commodity]}')"
+    #js = "window.open('https://www.streamlit.io/')"  # New tab or window
+    js = link
+    html = '<img src onerror="{}">'.format(js)
+    div = Div(text=html)
+    st.bokeh_chart(div)
 
 ##OLD CODE FOR BAR GRAPHS BASED ON AVERAGES -- WASN'T A GOOD IDEA
     # q1 = st.checkbox('Quartile 1 of Producer GHG Emissions (0-25%)')

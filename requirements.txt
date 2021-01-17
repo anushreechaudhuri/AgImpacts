@@ -4,3 +4,4 @@ plotly
 xlrd
 openpyxl
 statsmodels
+bokeh
