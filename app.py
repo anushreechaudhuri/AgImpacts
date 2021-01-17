@@ -122,7 +122,7 @@ with st.beta_expander('Indicator Charts'):
                     st.markdown(f'### Statistical Values for {name} vs. GHG Emissions (kg CO<sub>2</sub> eq)', unsafe_allow_html=True)
                     st.dataframe(results_table)
                 except:
-                    pas
+                    pass
             elif 'Display Statistics' in features and empty_graph == False and df_plot[y].describe().loc['count']>5:
                 st.markdown('Select a trendline to display statistics.')
             elif 'Display Statistics' in features:
