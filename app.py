@@ -95,25 +95,27 @@ with st.beta_expander('Indicator Charts'):
     features = st.multiselect('Select Additional Features', ['Label by Country', 'Label by System Type', 'Display Statistics'
     ])
     for y, name in col_labels:
-        df_filtered = format_df_col(df_filtered, y)
-        df_filtered = format_df_col(df_filtered, 'Country')
-        df_filtered = format_df_col(df_filtered, 'System')
-        empty_graph = df_filtered[y].isnull().values.all() or df_filtered[ghg].isnull().values.all()
+        df_plot = format_df_col(df_filtered, y)
+        if 'Label by Country' in features:
+            df_plot = format_df_col(df_plot, 'Country')
+        if 'Label by System Type' in features:
+            df_plot = format_df_col(df_plot, 'System')
+        empty_graph = df_plot[y].isnull().values.all() or df_plot[ghg].isnull().values.all()
         if empty_graph:
             st.markdown(f'A graph for {name} cannot be generated because there is no data for this indicator.', unsafe_allow_html = True)
         elif not empty_graph:
-            fig = px.scatter(x=df_filtered['GHG Emissions'],
+            fig = px.scatter(x=df_plot['GHG Emissions'],
                         template='simple_white',
-                y=df_filtered[y]
-                , color= df_filtered['Country'] if 'Label by Country' in features else None
-                , symbol = df_filtered['System'] if 'Label by System Type' in features else None
+                y=df_plot[y]
+                , color= df_plot['Country'] if 'Label by Country' in features else None
+                , symbol = df_plot['System'] if 'Label by System Type' in features else None
                 , title=f'{name} vs. GHG Emissions (kg CO<sub>2</sub> eq)',
                 labels={'x': 'GHG Emissions (kg CO<sub>2</sub> eq)', 'y':name, 'color' : 'Country', 'symbol' : 'System'}
                 , trendline = trendline_dict[options]
                 )
             fig = format_fig(fig)
             st.plotly_chart(fig)
-            if 'Display Statistics' in features and (options == 'Linear Trendline' or options == 'Non-Linear Trendline') and empty_graph == False and df_filtered[y].describe().loc['count']>5:
+            if 'Display Statistics' in features and (options == 'Linear Trendline' or options == 'Non-Linear Trendline') and empty_graph == False and df_plot[y].describe().loc['count']>5:
                 try:
                     results = px.get_trendline_results(fig)
                     results_table = results.px_fit_results.iloc[0].summary().tables[1]
@@ -121,7 +123,7 @@ with st.beta_expander('Indicator Charts'):
                     st.dataframe(results_table)
                 except:
                     pas
-            elif 'Display Statistics' in features and empty_graph == False and df_filtered[y].describe().loc['count']>5:
+            elif 'Display Statistics' in features and empty_graph == False and df_plot[y].describe().loc['count']>5:
                 st.markdown('Select a trendline to display statistics.')
             elif 'Display Statistics' in features:
                 st.markdown('There is not enough data to display statistics.')
