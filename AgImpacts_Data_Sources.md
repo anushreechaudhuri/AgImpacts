@@ -33,6 +33,10 @@ https://link.springer.com/article/10.1007%2Fs11367-013-0583-3
 https://www.tandfonline.com/doi/abs/10.1080/10549811.2020.1768871?journalCode=wjsf20 
 https://www.sciencedirect.com/science/article/pii/S0959652615002127 
 https://link.springer.com/article/10.1007/s11367-009-0089-1
+https://www.sciencedirect.com/science/article/abs/pii/S0959652613005015
+https://www.sciencedirect.com/science/article/abs/pii/S0959652609000584
+https://www.sciencedirect.com/science/article/abs/pii/S0921344919303295
+https://www.sciencedirect.com/science/article/abs/pii/S0959652615000347
 
 ---
 
