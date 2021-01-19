@@ -48,7 +48,7 @@ commodity_rows = {
     commodity: (start, end)
     for start, end, commodity in zip(rows.index, rows.index[1:], rows)
 }
-commodity_rows['Tuna'] = (596, 686)
+commodity_rows['Tuna'] = (601, 691) #596, 586
 # Select the commodity to analyze
 commodity = st.sidebar.selectbox(label='Select a Commodity', options=list(commodity_rows.keys()))
 start, end = commodity_rows[commodity]
