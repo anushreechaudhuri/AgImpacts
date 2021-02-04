@@ -1,5 +1,5 @@
-# AgImpacts
-This is the source code for our interactive web tool which is a part of AgImpacts, a project conducted by ten MIT undergraduates for the World Wildlife Fund. AgImpacts analyzes environmental trade-offs for ten agricultural commodities across five indicators: GHG emissions, land use, eutrophication potential, acidification potential, and freshwater withdrawal. To learn more about these topics and our project, [visit the AgImpacts website.](https://agimpacts.wpengine.com/)
+# AgImpacts Web Tool Source Code
+This is a repository containing source code for our [interactive web tool](https://share.streamlit.io/anushreechaudhuri/agimpacts/app.py) which is a part of AgImpacts, a project conducted by ten MIT undergraduates for the World Wildlife Fund. AgImpacts analyzes environmental trade-offs for ten agricultural commodities across five indicators: GHG emissions, land use, eutrophication potential, acidification potential, and freshwater withdrawal. To learn more about these topics and our project, [visit the AgImpacts website.](https://agimpacts.wpengine.com/)
 For queries about the source code or web tool, contact Anushree Chaudhuri (anuc@mit.edu). For information on the current state of this work, contact Emily Moberg (emily.a.moberg@gmail.com) of the World Wildlife Fund.
 
 **Watch Screencasts on Using The Web Tool: [Part 1](https://www.loom.com/share/580b27050b4249759bf82dd7aad80e80) | [Part 2](https://www.loom.com/share/8aba913be3134e0b9a6e32a76b1d33c2)**
