@@ -184,7 +184,7 @@ with st.beta_expander('Tool Usage Guide'):
     st.markdown(f'* **Raw Data for {commodity}** displays an interactive table of raw data for the selected commodity and a link to view and download our original data soures. To read more about the selected commodity, including interpretation and takeaways from the data, click the link below this section.', unsafe_allow_html=True)
     st.text('')
     st.markdown('All charts in this web tool are interactive. Useful features include zooming in and out, filtering by label to isolate a country or system of interest, hovering to see details on each data point and trendline, and downloading any plot as a png. Tables are also interactive; each column can be filtered and sorted. For a more in-depth tutorial on using this tool, including a walk-through of the interactive chart features, watch the screencast linked below.')
-    st.markdown('#### [Watch a Screencast on Using This Tool](https://agimpacts.wpengine.com/)', unsafe_allow_html=True)
+    st.markdown('#### Watch Screencasts on Using This Tool: [Part 1](https://agimpacts.wpengine.com/) | [Part 2](https://agimpacts.wpengine.com/)', unsafe_allow_html=True)
     st.text('')
     st.markdown('To report a bug, share this tool, view the source code, or record a screencast of your own usage of this tool to share with others, click the horizontal menu bars. For queries about this web tool, contact Anushree Chaudhuri (anuc@mit.edu) or Emily Moberg (emily.a.moberg@gmail.com).', unsafe_allow_html=True)
 st.text('')
