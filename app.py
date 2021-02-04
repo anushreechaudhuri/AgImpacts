@@ -141,7 +141,7 @@ with st.beta_expander('Impact Analysis'):
                 try:
                     results = px.get_trendline_results(fig)
                     results_table = results.px_fit_results.iloc[0].summary().tables[1]
-                    st.markdown(f'### Statistical Values for {name} vs. GHG Emissions (kg CO<sub>2</sub> eq)', unsafe_allow_html=True)
+                    st.markdown(f'#### Statistical Values for {name} vs. GHG Emissions (kg CO<sub>2</sub> eq)', unsafe_allow_html=True)
                     st.dataframe(results_table)
                 except:
                     pass
