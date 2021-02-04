@@ -6,7 +6,7 @@ st.set_page_config(layout='wide')
 
 
 st.title('Welcome to the AgImpacts Interactive Web Tool!')
-st.markdown('This interactive web tool is a part of AgImpacts, a project conducted by ten MIT undergraduates for the World Wilfelife Fund. AgImpacts analyzes environmental trade-offs for ten agricultural commodities across five indicators: GHG emissions, land use, eutrophication potential, acidification potential, and freshwater withdrawal. To learn more about these topics and our project, [visit the AgImpacts website.](https://agimpacts.wpengine.com/)', unsafe_allow_html=True)
+st.markdown('This interactive web tool is a part of AgImpacts, a project conducted by ten MIT undergraduates for the World Wildlife Fund. AgImpacts analyzes environmental trade-offs for ten agricultural commodities across five indicators: GHG emissions, land use, eutrophication potential, acidification potential, and freshwater withdrawal. To learn more about these topics and our project, [visit the AgImpacts website.](https://agimpacts.wpengine.com/)', unsafe_allow_html=True)
 st.markdown('Select a commodity of interest on the left sidebar to start. For a comprehensive guide to using this web tool, click on the **Tool Usage Guide** section below.')
 @st.cache(show_spinner=False, persist=True)  # save computation between reruns
 def get_full_df():
