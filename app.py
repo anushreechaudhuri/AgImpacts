@@ -70,16 +70,16 @@ col_labels_dict = {'GHG Emissions': 'GHG Emissions (kg CO<sub>2</sub> eq.)',
 
 indicators = ['Land Use', 'Eutrophication Potential', 
     'Acidification Potential', 'Freshwater Withdrawal']
-web_links = {'Maize' : 'https://agimpacts.wpengine.com/maize/',
-    'Palm Oil' : 'https://agimpacts.wpengine.com/palm-oil/',
-    'Soybeans' : 'https://agimpacts.wpengine.com/soybeans/',
-    'Coffee' : 'https://agimpacts.wpengine.com/coffee/',
-    'Roundwood' : 'https://agimpacts.wpengine.com/roundwood/',
-    'Beef' : 'https://agimpacts.wpengine.com/beef/',
-    'Poultry Meat' : 'https://agimpacts.wpengine.com/poultry-meat/',
-    'Salmon' : 'https://agimpacts.wpengine.com/salmon/',
-    'Shrimp' : 'https://agimpacts.wpengine.com/shrimp/',
-    'Tuna' : 'https://agimpacts.wpengine.com/tuna/'
+web_links = {'Maize' : 'https://agimpacts.wpengine.com/plants/maize/',
+    'Palm Oil' : 'https://agimpacts.wpengine.com/plants/palm-oil/',
+    'Soybeans' : 'https://agimpacts.wpengine.com/plants/soybeans/',
+    'Coffee' : 'https://agimpacts.wpengine.com/plants/coffee/',
+    'Roundwood' : 'https://agimpacts.wpengine.com/plants/roundwood/',
+    'Beef' : 'https://agimpacts.wpengine.com/livestock/beef/',
+    'Poultry Meat' : 'https://agimpacts.wpengine.com/livestock/poultry-meat/',
+    'Salmon' : 'https://agimpacts.wpengine.com/seafood/salmon/',
+    'Shrimp' : 'https://agimpacts.wpengine.com/seafood/shrimp/',
+    'Tuna' : 'https://agimpacts.wpengine.com/seafood/tuna/'
     }
 ghg = 'GHG Emissions'
 
